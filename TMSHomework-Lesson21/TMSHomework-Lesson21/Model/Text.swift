@@ -9,4 +9,5 @@ import Foundation
 
 struct Text {
     let string: String
+    let textSize: CGFloat
 }

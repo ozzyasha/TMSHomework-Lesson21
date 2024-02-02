@@ -10,29 +10,33 @@ import UIKit
 class ViewController: UIViewController {
 
     weak var label: UILabel!
+    var textSize: CGFloat!
     var viewModel = UpdateTextViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        label = makeLabel(size: 20)
+        label = makeLabel(size: viewModel.defaultText.textSize)
         setupDefautLabelText()
-        setupColorForAttributedLabelText(color: .blue)
+        setupColorForWordInAttributedLabelText(color: .blue, word: "Lorem", isBold: true)
     }
     
     private func setupDefautLabelText() {
         label.text = viewModel.defaultText.string
     }
     
-    private func setupColorForAttributedLabelText(color: UIColor) {
+    private func setupColorForWordInAttributedLabelText(color: UIColor, word: String, isBold: Bool) {
         let string = viewModel.newText.string
         let attributedString = NSMutableAttributedString(string: string)
         
         let labelAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: color
+            .foregroundColor: color,
         ]
         
-        let range = findWordPositioninAttributedString(word: "Lorem ipsum", in: string)
+        let range = findWordPositioninAttributedString(word: word, in: string)
         attributedString.addAttributes(labelAttributes, range: range ?? NSMakeRange(0, 0))
+        if isBold {
+            attributedString.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: viewModel.newText.textSize), range: range ?? NSMakeRange(0, 0))
+        }
         label.attributedText = attributedString
         
     }

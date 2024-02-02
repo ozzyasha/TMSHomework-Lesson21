@@ -13,6 +13,6 @@ import Foundation
 //}
 
 final class UpdateTextViewModel {
-    var defaultText: Text = Text(string: "Default Text")
-    var newText: Text = Text(string: "Lorem ipsum\n" + "dolor sit amet,\n" + "consectetur adipiscing elit")
+    var defaultText: Text = Text(string: "Default Text", textSize: 20)
+    var newText: Text = Text(string: "Lorem ipsum\n" + "dolor sit amet,\n" + "consectetur adipiscing elit", textSize: 20)
 }
