@@ -44,4 +44,44 @@ extension ViewController {
 
         return button
     }
+    
+    func makeVStackWithSegmentedControls() -> UIStackView {
+        let vStack = UIStackView()
+        vStack.axis = .vertical
+        vStack.distribution = .equalCentering
+        vStack.spacing = 10
+        vStack.alignment = .center
+        
+        view.addSubview(vStack)
+        vStack.translatesAutoresizingMaskIntoConstraints = false
+        vStack.topAnchor.constraint(equalToSystemSpacingBelow: view.topAnchor, multiplier: 10).isActive = true
+        vStack.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        let colorsArray = ["red", "green", "blue", "yellow"]
+        let isBoldArray = ["make text bold", "make text regular"]
+        let underlineArray = ["underlined", "not underlined"]
+        makeSegmentedControl(stackToAddIn: vStack, attributes: colorsArray)
+        makeSegmentedControl(stackToAddIn: vStack, attributes: isBoldArray)
+        makeSegmentedControl(stackToAddIn: vStack, attributes: underlineArray)
+        
+        return vStack
+    }
+    
+    private func makeSegmentedControl(stackToAddIn: UIStackView, attributes: Array<String>) {
+        
+        let segmentedControl = UISegmentedControl(items: attributes)
+        //        segmentedControl.sizeToFit()
+        
+        stackToAddIn.addArrangedSubview(segmentedControl)
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControl.widthAnchor.constraint(equalToConstant: 270).isActive = true
+        segmentedControl.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        
+        segmentedControl.addTarget(self, action: #selector(selectValue), for: .valueChanged)
+        // if buttonTapped {
+        // segmentedControl.isEnabled
+        // }
+//        return segmentedControl
+    }
+    
 }

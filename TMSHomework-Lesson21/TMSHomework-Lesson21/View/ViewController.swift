@@ -10,6 +10,7 @@ import UIKit
 class ViewController: UIViewController {
     weak var label: UILabel!
     weak var attributesButton: UIButton!
+    weak var segmentedControlStack: UIStackView!
     var attributedString: NSMutableAttributedString!
     var viewModel = LabelTextViewModel()
 
@@ -19,6 +20,15 @@ class ViewController: UIViewController {
         setupAttributedString()
         attributesButton = makeButton(buttonTitle: "Add Attributes", action: #selector(addAttributesButtonTapped), otherElementBottomAnchor: label.bottomAnchor)
         attributesButton = makeButton(buttonTitle: "Remove Attributes", action: #selector(removeAttributesButtonTapped), otherElementBottomAnchor: attributesButton.bottomAnchor)
+        segmentedControlStack = makeVStackWithSegmentedControls()
+    }
+    
+    private func removeAllAttriutes() {
+        let range = findWordPositioninAttributedString(word: viewModel.defaultText.string, in: viewModel.defaultText.string)
+        attributedString.removeAttribute(.font, range: range ?? NSMakeRange(0, 0))
+        attributedString.removeAttribute(.underlineStyle, range: range ?? NSMakeRange(0, 0))
+        attributedString.removeAttribute(.foregroundColor, range: range ?? NSMakeRange(0, 0))
+        label.attributedText = attributedString
     }
 
     private func setupDefautLabelText() {
@@ -30,19 +40,49 @@ class ViewController: UIViewController {
         attributedString = NSMutableAttributedString(string: labelText)
     }
 
-    private func setupColorForWordInAttributedLabelText(color: UIColor, word: String, isBold: Bool) {
+    private func setupColorForWordInAttributedLabelText(color: UIColor, word: String) {
         let labelText = viewModel.defaultText.string
         let labelAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: color,
+            .foregroundColor: color
         ]
         let range = findWordPositioninAttributedString(word: word, in: labelText)
 
         attributedString.addAttributes(labelAttributes, range: range ?? NSMakeRange(0, 0))
 
+//        if isBold {
+//            attributedString.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: viewModel.defaultText.textSize), range: range ?? NSMakeRange(0, 0))
+//        }
+
+        label.attributedText = attributedString
+    }
+    
+    private func setupBoldForWordInAttributedLabelText(isBold: Bool, word: String) {
+        let labelText = viewModel.defaultText.string
+        let labelAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: viewModel.defaultText.textSize)
+        ]
+        let range = findWordPositioninAttributedString(word: word, in: labelText)
+
         if isBold {
-            attributedString.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: viewModel.defaultText.textSize), range: range ?? NSMakeRange(0, 0))
+            attributedString.addAttributes(labelAttributes, range: range ?? NSMakeRange(0, 0))
+        } else {
+            attributedString.removeAttribute(labelAttributes.keys.first!, range: range ?? NSMakeRange(0, 0))
         }
 
+        label.attributedText = attributedString
+    }
+    
+    private func setupUnderlineForWordInAttributedLabelText(isUnderlined: Bool, word: String) {        let labelText = viewModel.defaultText.string
+        let labelAttributes: [NSAttributedString.Key: Any] = [
+            .underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        let range = findWordPositioninAttributedString(word: word, in: labelText)
+        if isUnderlined {
+            attributedString.addAttributes(labelAttributes, range: range ?? NSMakeRange(0, 0))
+        } else {
+            attributedString.removeAttribute(labelAttributes.keys.first!, range: range ?? NSMakeRange(0, 0))
+        }
+        
         label.attributedText = attributedString
     }
     
@@ -81,14 +121,45 @@ class ViewController: UIViewController {
     }
 
     @objc func addAttributesButtonTapped() {
-        setupColorForWordInAttributedLabelText(color: .blue, word: "Lorem", isBold: true)
-        setupColorForWordInAttributedLabelText(color: .green, word: "ipsum", isBold: false)
-        setupColorForWordInAttributedLabelText(color: .red, word: "amet", isBold: false)
+        setupColorForWordInAttributedLabelText(color: .blue, word: "Lorem")
+        setupColorForWordInAttributedLabelText(color: .green, word: "ipsum")
+        setupBoldForWordInAttributedLabelText(isBold: true, word: "Lorem ipsum")
+        setupColorForWordInAttributedLabelText(color: .red, word: "amet")
         setupUnderlineForLineInAttributedString(line: 2)
     }
 
     @objc func removeAttributesButtonTapped() {
+        removeAllAttriutes()
         setupDefautLabelText()
+    }
+    
+    @objc func selectValue(target: UISegmentedControl) {
+        let segmentIndex = target.selectedSegmentIndex
+        let textOfSegment = target.titleForSegment(at: segmentIndex)
+        let fullString = viewModel.defaultText.string
+        
+        if textOfSegment == "blue"{
+            setupColorForWordInAttributedLabelText(color: .blue, word: fullString)
+        } else if textOfSegment == "red" {
+            setupColorForWordInAttributedLabelText(color: .red, word: fullString)
+        } else if textOfSegment == "green" {
+            setupColorForWordInAttributedLabelText(color: .green, word: fullString)
+        } else if textOfSegment == "yellow" {
+            setupColorForWordInAttributedLabelText(color: .yellow, word: fullString)
+        }
+        
+        if textOfSegment == "make text bold" {
+            setupBoldForWordInAttributedLabelText(isBold: true, word: fullString)
+        } else if textOfSegment == "make text regular" {
+            setupBoldForWordInAttributedLabelText(isBold: false, word: fullString)
+        }
+        
+        if textOfSegment == "underlined" {
+            setupUnderlineForWordInAttributedLabelText(isUnderlined: true, word: fullString)
+        } else if textOfSegment == "not underlined" {
+            setupUnderlineForWordInAttributedLabelText(isUnderlined: false, word: fullString)
+        }
+        
     }
 }
 
@@ -99,7 +170,7 @@ class ViewController: UIViewController {
 //
 // Ваш текст должен включать следующие атрибуты:
 //
-// Разные цвета для различных слов. +
+// - Разные цвета для различных слов. +
 // - Жирный и обычный шрифт для разных фраз. +
 // - Подчеркивание для одного из абзацев. +
 // - Любые другие атрибуты, которые вы считаете интересными.

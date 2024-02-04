@@ -8,5 +8,5 @@
 import Foundation
 
 final class LabelTextViewModel {
-    var defaultText: Text = Text(string: "Lorem ipsum\n" + "dolor sit amet,\n" + "consectetur adipiscing elit", textSize: 20)
+    let defaultText: Text = Text(string: "Lorem ipsum\n" + "dolor sit amet,\n" + "consectetur adipiscing elit", textSize: 20)
 }
