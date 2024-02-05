@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     var colorsSegmentedControl: UISegmentedControl!
     var boldSegmentedControl: UISegmentedControl!
     var underlineSegmentedControl: UISegmentedControl!
+    var textSizeSegmentedControl: UISegmentedControl!
     
     var attributedString: NSMutableAttributedString!
     var viewModel = LabelTextViewModel()
@@ -59,16 +60,54 @@ class ViewController: UIViewController {
     private func setupBoldForWordInAttributedLabelText(isBold: Bool, word: String) {
         let labelText = viewModel.defaultText.string
         let labelAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: viewModel.defaultText.textSize)
+            .font: UIFont.boldSystemFont(ofSize: label.font.pointSize)
         ]
         let range = findWordPositioninAttributedString(word: word, in: labelText)
 
         if isBold {
             attributedString.addAttributes(labelAttributes, range: range ?? NSMakeRange(0, 0))
         } else {
-            attributedString.removeAttribute(labelAttributes.keys.first!, range: range ?? NSMakeRange(0, 0))
+            attributedString.enumerateAttribute(.font, in: NSRange(location: 0, length: attributedString.length), options: []) { (value, range, stop) in
+                if let font = value as? UIFont,
+                   font.fontDescriptor.symbolicTraits.contains(.traitBold) {
+                    attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: label.font.pointSize), range: range)
+                }
+            }
+
         }
 
+        label.attributedText = attributedString
+    }
+    
+    private func setupSizeForWordInAttributedLabelText(segmentSelected: String, word: String) {
+        let labelText = viewModel.defaultText.string
+        
+        let range = findWordPositioninAttributedString(word: word, in: labelText)
+        if segmentSelected == "increase text size" {
+            attributedString.enumerateAttribute(.font, in: NSRange(location: 0, length: attributedString.length), options: []) { (value, range, stop) in
+                if let font = value as? UIFont,
+                   font.fontDescriptor.symbolicTraits.contains(.traitBold) {
+                    attributedString.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: label.font.pointSize + 5), range: range)
+//                    defaultTextSize -= 5
+                } else {
+                    attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: label.font.pointSize + 5), range: range)
+//                    defaultTextSize -= 5
+                }
+            }
+        } else if segmentSelected == "reduce text size" {
+            attributedString.enumerateAttribute(.font, in: NSRange(location: 0, length: attributedString.length), options: []) { (value, range, stop) in
+                if let font = value as? UIFont,
+                   font.fontDescriptor.symbolicTraits.contains(.traitBold) {
+                    attributedString.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: label.font.pointSize - 5), range: range)
+                } else {
+                    attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: label.font.pointSize - 5), range: range)
+                }
+            }
+            
+//            attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: defaultTextSize - 5), range: range ?? NSMakeRange(0, 0))
+            
+        }
+        
         label.attributedText = attributedString
     }
     
@@ -120,6 +159,8 @@ class ViewController: UIViewController {
         
         return nil
     }
+    
+
 
     @objc func addAttributesButtonTapped() {
         setupColorForWordInAttributedLabelText(color: .blue, word: "Lorem")
@@ -162,12 +203,17 @@ class ViewController: UIViewController {
             setupUnderlineForWordInAttributedLabelText(isUnderlined: false, word: fullString)
         }
         
+        if textOfSegment == "increase text size" || textOfSegment == "reduce text size" {
+            setupSizeForWordInAttributedLabelText(segmentSelected: textOfSegment!, word: fullString)
+        }
+        
     }
     
     @objc func makeSegmentedControlDisabled() {
         colorsSegmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
         boldSegmentedControl.selectedSegmentIndex = 1
         underlineSegmentedControl.selectedSegmentIndex = 1
+        textSizeSegmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
     }
 }
 
@@ -187,4 +233,4 @@ class ViewController: UIViewController {
 //
 // Добавьте еще одну кнопку для сброса текста в исходное состояние (без атрибутов). +
 //
-// Добавьте возможность изменять атрибуты текста (цвет, стиль, размер шрифта) с использованием UISegmentedControl или других интерактивных элементов.
+// Добавьте возможность изменять атрибуты текста (цвет +, стиль +, размер шрифта +) с использованием UISegmentedControl или других интерактивных элементов. +

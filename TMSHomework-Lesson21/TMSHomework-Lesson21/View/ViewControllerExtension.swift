@@ -19,7 +19,7 @@ extension ViewController {
         view.addSubview(label)
 
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.topAnchor.constraint(equalToSystemSpacingBelow: view.topAnchor, multiplier: 40).isActive = true
+        label.topAnchor.constraint(equalToSystemSpacingBelow: view.topAnchor, multiplier: 50).isActive = true
         label.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 
         return label
@@ -60,9 +60,11 @@ extension ViewController {
         let colorsArray = ["red", "green", "blue", "yellow"]
         let isBoldArray = ["make text bold", "make text regular"]
         let underlineArray = ["underlined", "not underlined"]
+        let textSizeArray = ["increase text size", "reduce text size"]
         colorsSegmentedControl = makeSegmentedControl(stackToAddIn: vStack, attributes: colorsArray)
         boldSegmentedControl = makeSegmentedControl(stackToAddIn: vStack, attributes: isBoldArray)
         underlineSegmentedControl = makeSegmentedControl(stackToAddIn: vStack, attributes: underlineArray)
+        textSizeSegmentedControl = makeSegmentedControl(stackToAddIn: vStack, attributes: textSizeArray)
         
         boldSegmentedControl.selectedSegmentIndex = 1
         underlineSegmentedControl.selectedSegmentIndex = 1
