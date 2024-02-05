@@ -11,6 +11,10 @@ class ViewController: UIViewController {
     weak var label: UILabel!
     weak var attributesButton: UIButton!
     weak var segmentedControlStack: UIStackView!
+    var colorsSegmentedControl: UISegmentedControl!
+    var boldSegmentedControl: UISegmentedControl!
+    var underlineSegmentedControl: UISegmentedControl!
+    
     var attributedString: NSMutableAttributedString!
     var viewModel = LabelTextViewModel()
 
@@ -49,10 +53,6 @@ class ViewController: UIViewController {
 
         attributedString.addAttributes(labelAttributes, range: range ?? NSMakeRange(0, 0))
 
-//        if isBold {
-//            attributedString.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: viewModel.defaultText.textSize), range: range ?? NSMakeRange(0, 0))
-//        }
-
         label.attributedText = attributedString
     }
     
@@ -72,7 +72,8 @@ class ViewController: UIViewController {
         label.attributedText = attributedString
     }
     
-    private func setupUnderlineForWordInAttributedLabelText(isUnderlined: Bool, word: String) {        let labelText = viewModel.defaultText.string
+    private func setupUnderlineForWordInAttributedLabelText(isUnderlined: Bool, word: String) {
+        let labelText = viewModel.defaultText.string
         let labelAttributes: [NSAttributedString.Key: Any] = [
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
@@ -131,6 +132,7 @@ class ViewController: UIViewController {
     @objc func removeAttributesButtonTapped() {
         removeAllAttriutes()
         setupDefautLabelText()
+        makeSegmentedControlDisabled()
     }
     
     @objc func selectValue(target: UISegmentedControl) {
@@ -160,6 +162,12 @@ class ViewController: UIViewController {
             setupUnderlineForWordInAttributedLabelText(isUnderlined: false, word: fullString)
         }
         
+    }
+    
+    @objc func makeSegmentedControlDisabled() {
+        colorsSegmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
+        boldSegmentedControl.selectedSegmentIndex = 1
+        underlineSegmentedControl.selectedSegmentIndex = 1
     }
 }
 

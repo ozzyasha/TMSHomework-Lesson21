@@ -37,11 +37,11 @@ extension ViewController {
         view.addSubview(button)
 
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.topAnchor.constraint(equalToSystemSpacingBelow: otherElementBottomAnchor, multiplier: 10).isActive = true
+        button.topAnchor.constraint(equalToSystemSpacingBelow: otherElementBottomAnchor, multiplier: 5).isActive = true
         button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         button.widthAnchor.constraint(equalToConstant: 200).isActive = true
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
+        
         return button
     }
     
@@ -60,17 +60,18 @@ extension ViewController {
         let colorsArray = ["red", "green", "blue", "yellow"]
         let isBoldArray = ["make text bold", "make text regular"]
         let underlineArray = ["underlined", "not underlined"]
-        makeSegmentedControl(stackToAddIn: vStack, attributes: colorsArray)
-        makeSegmentedControl(stackToAddIn: vStack, attributes: isBoldArray)
-        makeSegmentedControl(stackToAddIn: vStack, attributes: underlineArray)
+        colorsSegmentedControl = makeSegmentedControl(stackToAddIn: vStack, attributes: colorsArray)
+        boldSegmentedControl = makeSegmentedControl(stackToAddIn: vStack, attributes: isBoldArray)
+        underlineSegmentedControl = makeSegmentedControl(stackToAddIn: vStack, attributes: underlineArray)
+        
+        boldSegmentedControl.selectedSegmentIndex = 1
+        underlineSegmentedControl.selectedSegmentIndex = 1
         
         return vStack
     }
     
-    private func makeSegmentedControl(stackToAddIn: UIStackView, attributes: Array<String>) {
-        
+    private func makeSegmentedControl(stackToAddIn: UIStackView, attributes: Array<String>) -> UISegmentedControl {
         let segmentedControl = UISegmentedControl(items: attributes)
-        //        segmentedControl.sizeToFit()
         
         stackToAddIn.addArrangedSubview(segmentedControl)
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
@@ -78,10 +79,8 @@ extension ViewController {
         segmentedControl.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
         segmentedControl.addTarget(self, action: #selector(selectValue), for: .valueChanged)
-        // if buttonTapped {
-        // segmentedControl.isEnabled
-        // }
-//        return segmentedControl
+        
+        return segmentedControl
     }
     
 }
